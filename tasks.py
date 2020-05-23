@@ -1,23 +1,41 @@
-import os
-import subprocess
+from argparse import Namespace
 from celery import Celery
+import importlib
+import logging
+import os
+import re
+import sys
+
+sys.path.append(os.getcwd())
 
 app = Celery('tasks', broker='pyamqp://guest@localhost//')
 
-@app.task
-def add(x, y):
-    return x + y
+class TaskError(Exception):
+    """ Raised when task fails """
+    pass
+
+def get_class_name(name):
+    return "".join(map(str.capitalize, re.split('[_-]', name)))
 
 @app.task
-def create_derivatives(rstar_dir, id):
-	command = f"{os.environ['HOME']}/work/book-publisher/create-deriv-images.pl -q -r {rstar_dir} {id}"
-	print(f"Running {command}")
-	p = subprocess.Popen(command,
-			shell=True,
-			errors='replace',
-			stdout=subprocess.PIPE,
-			stderr=subprocess.STDOUT)
-	#return iter(p.stdout.readline, b'')
-	return iter(p.stdout.readline, '')
+def do_task(args_dict):
+    args = Namespace(**args_dict)
 
-# vim: set ts=4:
+    if args.debug:
+        logging.getLogger().setLevel(logging.DEBUG)
+
+    module_name, method_name = args.service.split(":")
+    logging.debug("module name: %s", module_name)
+    logging.debug("method name: %s", method_name)
+    class_name = get_class_name(module_name)
+    logging.debug("class name: %s", class_name)
+    logging.debug("python sys.path: %s", sys.path)
+    module = importlib.import_module(module_name)
+    cls = getattr(module, class_name)
+    obj = cls(args)
+    method = getattr(obj, method_name)
+    result = method()
+    logging.debug("result: %s", result)
+    if not result["success"]:
+        raise TaskError("Task failed")
+
