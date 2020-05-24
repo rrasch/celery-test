@@ -8,7 +8,8 @@ import sys
 
 sys.path.append(os.getcwd())
 
-app = Celery('tasks', broker='pyamqp://guest@localhost//')
+app = Celery('tasks')
+app.config_from_object('celeryconfig')
 
 class TaskError(Exception):
     """ Raised when task fails """
