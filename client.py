@@ -18,7 +18,7 @@ parser.add_argument("-s", "--service", required=True,
     help="Service, e.g. book:create_derivatives")
 parser.add_argument("-e", "--extra-args", default="",
     help="Extra arguments")
-parser.add_argument("-d", "---debug", action="store_true",
+parser.add_argument("-d", "--debug", action="store_true",
     help="Enable debugging messages")
 args = parser.parse_args()
 
