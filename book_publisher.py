@@ -7,7 +7,8 @@ import uuid
 
 class BookPublisher:
 
-    bin_dir = "/usr/local/dlib/book-publisher/bin"
+#   bin_dir = "/usr/local/dlib/book-publisher/bin"
+    bin_dir = f"{os.environ['HOME']}/work/book-publisher"
 
     tmp_rootdir = "/content/prod/rstar/tmp"
 
@@ -34,6 +35,12 @@ class BookPublisher:
         return self._exec_cmd("create-deriv-images.pl",
                       "stitch-pages.pl",
                       "create-pdf.pl")
+
+    def shrink_pdf(self):
+        shrink_cmd = (f"{self.bin_dir}/shrink-aco-pdf.py"
+                      f" {self.args.input_path}"
+                      f" {self.args.output_path}")
+        return self.cmd.do_cmd(shrink_cmd)
 
     def _exec_cmd(self, *script_names):
         if self.args.rstar_dir:

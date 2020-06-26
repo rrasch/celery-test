@@ -29,6 +29,8 @@ logging.basicConfig(
 if args.debug:
     logging.getLogger().setLevel(logging.DEBUG)
 
+# convert to dictionary so that args can
+# be serialized for do_task.delay
 args_dict = vars(args)
 
 logging.debug(args_dict)
