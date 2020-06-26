@@ -1,3 +1,3 @@
-# celery-test
+# Celery proof of concept
 
-sudo apt install python-celery-common
+This is a test implementation of Celery, a Python task-queue.  We would like to see how it performs with tasks such as derivative generation and video transcoding.
