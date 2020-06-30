@@ -42,6 +42,9 @@ class BookPublisher:
                       f" {self.args.output_path}")
         return self.cmd.do_cmd(shrink_cmd)
 
+    def test(self):
+        return { "success": True, "output": "OK" }
+
     def _exec_cmd(self, *script_names):
         if self.args.rstar_dir:
             return self.cmd.do_cmd(*script_names)

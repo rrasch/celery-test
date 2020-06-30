@@ -37,6 +37,7 @@ def do_task(args_dict):
     method = getattr(obj, method_name)
     result = method()
     logging.debug("result: %s", result)
-    if not result["success"]:
-        raise TaskError("Task failed")
+#   if not result["success"]:
+#       raise TaskError("Task failed")
+    return result
 
